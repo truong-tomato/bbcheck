@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   }
 };
 
-const isAccessGateEnabled = process.env.ENABLE_BB_ACCESS_GATE === "true";
+const isAccessGateEnabled = process.env.ENABLE_BB_ACCESS_GATE !== "false";
 
 export default function RootLayout({
   children

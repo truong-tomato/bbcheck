@@ -7,7 +7,7 @@ Token holder bubblemap + high-volume trading board for Gorbagana.
 - App access can be gated by wallet balance.
 - User must connect wallet and hold at least `1,000,000 $BB`.
 - Required token mint: `APxsyvmenL6WxTS8f4JUZ2wtimgyTwywNC1bdNoRwi5d`.
-- Toggle with `ENABLE_BB_ACCESS_GATE=true` (default is off for local building).
+- Toggle with `ENABLE_BB_ACCESS_GATE` (`true` by default, set `false` to disable).
 
 ## What it does
 
