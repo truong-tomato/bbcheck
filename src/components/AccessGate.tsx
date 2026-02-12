@@ -195,9 +195,9 @@ export function AccessGate({ children }: { children: React.ReactNode }): JSX.Ele
   return (
     <main className="accessGateShell">
       <section className="accessGateCard">
-        <img src="/bbubble-logo.png" alt="BB Check logo" className="brandLogo" />
+        <img src="/bbubble-logo.png" alt="BB Tools logo" className="brandLogo" />
         <p className="brandKicker">HOLDER ACCESS ONLY</p>
-        <h1>BB Check</h1>
+        <h1>BB Tools</h1>
         <p className="heroSubtext">
           Connect a wallet holding at least <strong>{formatNumber(BB_MIN_HOLDING, 0)} $BB</strong> to access the app.
         </p>

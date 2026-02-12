@@ -3,8 +3,13 @@ import { AccessGate } from "@/components/AccessGate";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BB Check",
-  description: "An ultimate onchain tool exclusively for Gorbagana"
+  title: "BB Tools",
+  description: "An ultimate onchain tool exclusively for Gorbagana",
+  icons: {
+    icon: "/bbubble-logo.png",
+    shortcut: "/bbubble-logo.png",
+    apple: "/bbubble-logo.png"
+  }
 };
 
 const isAccessGateEnabled = process.env.ENABLE_BB_ACCESS_GATE === "true";

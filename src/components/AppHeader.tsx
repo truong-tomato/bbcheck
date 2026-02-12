@@ -12,9 +12,9 @@ export function AppHeader({ activeTool }: AppHeaderProps): JSX.Element {
   return (
     <header className="appHeader">
       <div className="appHeaderBrand">
-        <img src="/bbubble-logo.png" alt="BB Check logo" className="brandLogo" />
+        <img src="/bbubble-logo.png" alt="BB Tools logo" className="brandLogo" />
         <div className="appHeaderTitleWrap">
-          <h1>BB Check</h1>
+          <h1>BB Tools</h1>
           <p className="brandKicker">An ultimate onchain tool exclusively for Gorbagana</p>
         </div>
       </div>
