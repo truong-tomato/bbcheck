@@ -7,6 +7,9 @@ import { BB_MIN_HOLDING, BB_TOKEN_LINK, BB_TOKEN_MINT } from "@/lib/bb-access";
 
 interface WalletProvider {
   isConnected?: boolean;
+  isBackpack?: boolean;
+  name?: string;
+  providers?: WalletProvider[];
   publicKey?: PublicKey;
   connect: () => Promise<{ publicKey?: PublicKey } | void>;
   disconnect?: () => Promise<void>;
@@ -17,6 +20,9 @@ interface WalletProvider {
 declare global {
   interface Window {
     solana?: WalletProvider;
+    backpack?: {
+      solana?: WalletProvider;
+    };
   }
 }
 
@@ -34,12 +40,40 @@ const shortenAddress = (value: string): string => {
   return `${value.slice(0, 6)}...${value.slice(-6)}`;
 };
 
-const getWalletProvider = (): WalletProvider | null => {
+const isBackpackProvider = (provider: WalletProvider | null | undefined): provider is WalletProvider => {
+  if (!provider) {
+    return false;
+  }
+
+  if (provider.isBackpack) {
+    return true;
+  }
+
+  return provider.name?.toLowerCase() === "backpack";
+};
+
+const getBackpackProvider = (): WalletProvider | null => {
   if (typeof window === "undefined") {
     return null;
   }
 
-  return window.solana ?? null;
+  if (isBackpackProvider(window.backpack?.solana)) {
+    return window.backpack?.solana ?? null;
+  }
+
+  const topLevel = window.solana;
+  if (!topLevel) {
+    return null;
+  }
+
+  if (Array.isArray(topLevel.providers)) {
+    const backpack = topLevel.providers.find((provider) => isBackpackProvider(provider));
+    if (backpack) {
+      return backpack;
+    }
+  }
+
+  return isBackpackProvider(topLevel) ? topLevel : null;
 };
 
 export function AccessGate({ children }: { children: React.ReactNode }): JSX.Element {
@@ -112,9 +146,9 @@ export function AccessGate({ children }: { children: React.ReactNode }): JSX.Ele
   }, []);
 
   const connectAndCheck = useCallback(async () => {
-    const provider = getWalletProvider();
+    const provider = getBackpackProvider();
     if (!provider) {
-      setError("No Solana wallet found. Install Phantom or another wallet.");
+      setError("Backpack wallet not found. Install Backpack and use it for this site.");
       return;
     }
 
@@ -139,7 +173,7 @@ export function AccessGate({ children }: { children: React.ReactNode }): JSX.Ele
   }, [evaluateAccess]);
 
   const disconnectWallet = useCallback(async () => {
-    const provider = getWalletProvider();
+    const provider = getBackpackProvider();
     if (provider?.disconnect) {
       try {
         await provider.disconnect();
@@ -152,7 +186,7 @@ export function AccessGate({ children }: { children: React.ReactNode }): JSX.Ele
   }, [resetState]);
 
   useEffect(() => {
-    const provider = getWalletProvider();
+    const provider = getBackpackProvider();
     if (!provider) {
       return;
     }
@@ -199,7 +233,8 @@ export function AccessGate({ children }: { children: React.ReactNode }): JSX.Ele
         <p className="brandKicker">HOLDER ACCESS ONLY</p>
         <h1>BB Tools</h1>
         <p className="heroSubtext">
-          Connect a wallet holding at least <strong>{formatNumber(BB_MIN_HOLDING, 0)} $BB</strong> to access the app.
+          Connect your Backpack wallet holding at least <strong>{formatNumber(BB_MIN_HOLDING, 0)} $BB</strong> to
+          access the app.
         </p>
         <p className="detailSub">
           Token:{" "}
@@ -225,7 +260,7 @@ export function AccessGate({ children }: { children: React.ReactNode }): JSX.Ele
 
         <div className="accessGateActions">
           <button onClick={() => void connectAndCheck()} disabled={isChecking}>
-            {isChecking ? "CHECKING..." : walletAddress ? "RECHECK ACCESS" : "CONNECT WALLET"}
+            {isChecking ? "CHECKING..." : walletAddress ? "RECHECK ACCESS" : "CONNECT BACKPACK"}
           </button>
           {walletAddress && (
             <button className="accessSecondaryButton" onClick={() => void disconnectWallet()} disabled={isChecking}>
